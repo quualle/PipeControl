@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Bestandskunden</title>
+  </head>
+  <body>
+    <h1>Bestandskunden</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>BK</th>
+          <th>Anreise</th>
+          <th>Abreise</th>
+          <th>Vertrag gekündigt zum</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for customer in customers %}
+          <tr>
+            <td>{{ customer.id }}</td>
+            <td>{{ customer.anreise }}</td>
+            <td>{{ customer.abreise }}</td>
+            <td>{{ customer.vertrag_gekuendigt_zum }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </body>
+</html>
