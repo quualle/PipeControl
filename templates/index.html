@@ -73,6 +73,7 @@
                 <th>Email</th>
                 <th onclick="sortTable(3)">Status</th>
                 <th scope="col">Hinzugefügt am</th>
+                <th scope="col">Zuletzt geändert</th>
                 <th></th>
             </tr>
         </thead>
@@ -86,6 +87,7 @@
                 <td>{{ lead.email }}</td>
                 <td>{{ lead.status }}</td>
                 <td>{{ lead.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                <td>{{ lead.last_changed.strftime('%d.%m.%Y %H:%M') }}</td>
                 <!-- ... other table cells ... -->
                     
                         <td>

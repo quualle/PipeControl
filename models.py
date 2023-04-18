@@ -13,6 +13,17 @@ class Lead(db.Model):
     email = db.Column(db.String(100))
     status = db.Column(db.String(100))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    last_changed = db.Column(db.DateTime, nullable =False , default=datetime.utcnow)
+
+    def __init__(self, first_name, last_name, phone, email, status):
+        self.first_name = first_name
+        self.last_name = last_name
+        self.phone = phone
+        self.email = email
+        self.status = status
+        self.created_at = datetime.utcnow()
+        self.last_changed = datetime.utcnow()
+
 
 class Customer(db.Model):
     id = db.Column(db.Integer, primary_key=True)

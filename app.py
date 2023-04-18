@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 from models import db, Lead, Customer
+from datetime import datetime
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///meinefirma.db'
@@ -107,6 +108,7 @@ def change_status(id):
     next_status = get_next_status(lead.status)
     if next_status:
         lead.status = next_status
+        lead.last_changed = datetime.utcnow()
         db.session.commit()
         response = jsonify(success=True, message="Status updated successfully.")
     else:
