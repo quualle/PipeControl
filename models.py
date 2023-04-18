@@ -12,7 +12,7 @@ class Lead(db.Model):
     phone = db.Column(db.String(50))
     email = db.Column(db.String(100))
     status = db.Column(db.String(100))
-    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 class Customer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
