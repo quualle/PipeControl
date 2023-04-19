@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -47,22 +49,44 @@
             <option value="11. Anreise erfolgt">11. Anreise erfolgt</option>
         </select>
     </div>
+            <div class="form-group">
+                <label for="zugehoerigkeit">Zugehörigkeit</label>
+                <select name="zugehoerigkeit" class="form-control">
+                    <option value="Marco">Marco</option>
+                    <option value="Saskia">Saskia</option>
+                    <option value="Ines">Ines</option>
+                </select>
+            </div>
     <button type="submit" class="btn btn-success">Save</button>
 </form>
 <table id="leads-table" class="table table-striped mt-3">
 
-    
+    <div>
     <label for="sort-by">Sort by:</label>
         <a href="{{ url_for('index', sort_by='id') }}">ID</a>
         <a href="{{ url_for('index', sort_by='last_name') }}">Nachname</a>
         <a href="{{ url_for('index', sort_by='status') }}">Status</a>
+    </div>
 
+    <div style="margin-top: 10px;"></div>
+    <label for="filter-zugehoerigkeit">Filter by zugehoerigkeit:</label>
+    <select id="filter-zugehoerigkeit" class="form-control">
+        <option value="">All</option>
+        <option value="Marco">Marco</option>
+        <option value="Saskia">Saskia</option>            
+        <option value="Ines">Ines</option>
+    </select>
+</div>
 
-        
+    <label for="filter-status">Filter by status:</label>
+    <select id="filter-status" class="form-control">
+        <option value="">All</option>
+        <!-- Add all your status options here -->
+        <option value="1. Infogespräch fehlt noch">1. Infogespräch fehlt noch</option>
+        <!-- ... -->
+    </select>
 
-        
-
-    
+    <button id="apply-filters" class="btn btn-primary mt-3">Apply filters</button>
    
         <thead>
             <tr>
@@ -74,6 +98,7 @@
                 <th onclick="sortTable(3)">Status</th>
                 <th scope="col">Hinzugefügt am</th>
                 <th scope="col">Zuletzt geändert</th>
+                <th scope="col">zugehoerigkeit</th>
                 <th></th>
             </tr>
         </thead>
@@ -88,6 +113,7 @@
                 <td>{{ lead.status }}</td>
                 <td>{{ lead.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
                 <td>{{ lead.last_changed.strftime('%d.%m.%Y %H:%M') }}</td>
+                <td>{{ lead.zugehoerigkeit }}</td>
                 <!-- ... other table cells ... -->
                     
                         <td>
@@ -221,7 +247,21 @@
                     });
                 }
             }
+        document.getElementById('apply-filters').addEventListener('click', function () {
+            var filterZugehoerigkeit = document.getElementById('filter-zugehoerigkeit').value;
+            var filterStatus = document.getElementById('filter-status').value;
+            var url = '/?';
 
+            if (filterZugehoerigkeit) {
+                url += 'filter_zugehoerigkeit=' + encodeURIComponent(filterZugehoerigkeit) + '&';
+            }
+
+            if (filterStatus) {
+                url += 'filter_status=' + encodeURIComponent(filterStatus) + '&';
+            }
+
+            window.location.href = url;
+        });
 
         </script>
         <a href="{{ bk_link }}">{{ bk_link_text }}</a>
