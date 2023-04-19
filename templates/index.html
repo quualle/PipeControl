@@ -337,7 +337,7 @@
                   const customComparer = (idx, asc) => (a, b) => { //neu
                         const aValue = parseFloat(getCellValue(asc ? a : b, idx).replace(",", "."));//neu
                         const bValue = parseFloat(getCellValue(asc ? b : a, idx).replace(",", "."));//neu
-                        return aValue - bValue;//neu
+                        return aValue - bValue;
                     };
 
                   const comparer = (idx, asc) => (a, b) => ((v1, v2) => 
