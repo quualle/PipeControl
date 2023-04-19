@@ -15,6 +15,7 @@ class Lead(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     last_changed = db.Column(db.DateTime, nullable =False , default=datetime.utcnow)
     zugehoerigkeit = db.Column(db.String(50), nullable=True)
+    notes = db.Column(db.Text, nullable=True)
 
     def __init__(self, first_name, last_name, phone, email, status, zugehoerigkeit):
         self.first_name = first_name

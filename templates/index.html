@@ -57,6 +57,11 @@
                     <option value="Ines">Ines</option>
                 </select>
             </div>
+            <div class="form-group">
+                <label for="notes">Notes:</label>
+                <textarea name="notes" class="form-control" rows="4"></textarea>
+            </div>
+            
     <button type="submit" class="btn btn-success">Save</button>
 </form>
 <table id="leads-table" class="table table-striped mt-3">
@@ -99,6 +104,7 @@
                 <th scope="col">Hinzugefügt am</th>
                 <th scope="col">Zuletzt geändert</th>
                 <th scope="col">zugehoerigkeit</th>
+                <th>Notes</th>
                 <th></th>
             </tr>
         </thead>
@@ -114,6 +120,8 @@
                 <td>{{ lead.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
                 <td>{{ lead.last_changed.strftime('%d.%m.%Y %H:%M') }}</td>
                 <td>{{ lead.zugehoerigkeit }}</td>
+                <td class="notes" contenteditable="true" onblur="updateNotes({ lead.id }, this)">{{ lead.notes }}</td>
+
                 <!-- ... other table cells ... -->
                     
                         <td>
@@ -122,12 +130,12 @@
                                     Delete
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="deleteMenu">
-                                    <button class="dropdown-item" onclick="deleteLead('{{ lead.id }}', 'mistake')">Delete because of mistake</button>
-                                    <button class="dropdown-item" onclick="deleteLead('{{ lead.id }}', 'not_convert')">Delete because customer will not convert</button>
+                                    <button class="dropdown-item" onclick="deleteLead('{ lead.id }', 'mistake')">Delete because of mistake</button>
+                                    <button class="dropdown-item" onclick="deleteLead('{ lead.id }', 'not_convert')">Delete because customer will not convert</button>
                                     <div class="dropdown-divider"></div>
                                     <div class="dropdown-header">Reason for not converting:</div>
                                     {% for i in range(1, 8) %}
-                                    <button class="dropdown-item" onclick="deleteLeadWithReason('{{ lead.id }}', 'reason_{{ i }}')">Reason {{ i }}</button>
+                                    <button class="dropdown-item" onclick="deleteLeadWithReason('{ lead.id }', 'reason_{{ i }}')">Reason {{ i }}</button>
                                     {% endfor %}
                                 </div>
                             </div>
@@ -265,5 +273,30 @@
 
         </script>
         <a href="{{ bk_link }}">{{ bk_link_text }}</a>
+
+        <script>
+            function updateNotes(leadId, notesCell) {
+              const notes = notesCell.textContent;
+            
+              fetch('/update_notes/' + leadId, {
+                method: 'POST',
+                body: JSON.stringify({ notes: notes }),
+                headers: {
+                  'Content-Type': 'application/json',
+                  'X-CSRFToken': document.getElementsByName("csrf_token")[0].content
+                },
+              })
+              .then(response => {
+                if (!response.ok) {
+                  throw new Error('Network response was not ok');
+                }
+                console.log('Notes updated successfully');
+              })
+              .catch(error => {
+                console.error('There was a problem updating the notes:', error);
+              });
+            }
+            </script>
+            
     </body>
     </html>

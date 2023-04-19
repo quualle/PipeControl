@@ -72,6 +72,7 @@ def add_lead():
     email = request.form['email']
     status = request.form['status']
     zugehoerigkeit = request.form['zugehoerigkeit']
+    notes = request.form.get('notes', '')
     status_options = ['1. Infogespräch fehlt noch',
                       '2. Infogespräch geführt, EB fehlt',
                       '3. Infogespräch geführt, warten auf SA Erlaubnis',
@@ -83,12 +84,23 @@ def add_lead():
                       '9. Warten auf Reisedaten',
                       '10. Warten auf Anreise',
                       '11. Anreise erfolgt']
-    lead = Lead(first_name=first_name, last_name=last_name, phone=phone, email=email, status=status, zugehoerigkeit=zugehoerigkeit)    
+    lead = Lead(first_name=first_name, last_name=last_name, phone=phone, email=email, status=status, zugehoerigkeit=zugehoerigkeit, notes = notes)    
     
     db.session.add(lead)
     db.session.commit()
 
     return redirect(url_for('index'))
+
+
+@app.route('/update_notes/<int:lead_id>', methods=['POST'])
+def update_notes(lead_id):
+    notes = request.json['notes']
+    lead = Lead.query.get(lead_id)
+    if lead:
+        lead.notes = notes
+        db.session.commit()
+        return 'OK', 200
+    return 'Lead not found', 404
 
     
 @app.route('/bestandskunden')
