@@ -10,6 +10,29 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <style>
+        .progress-line {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          width: 100%;
+          margin-bottom: 5px;
+        }
+      
+        .status-point {
+          width: 8px;
+          height: 8px;
+          background-color: #ccc;
+          border-radius: 50%;
+        }
+      
+        .completed {
+          background-color: green;
+        }
+      </style>
+      
+
+    
 </head>
 <body>
     <div class="container mt-5">
@@ -96,6 +119,7 @@
         <thead>
             <tr>
                 <th onclick="sortTable(0)">ID</th>
+                <th onclick="sortTable(0)">Fortschritt</th>
                 <th onclick="sortTable(1)">Vorname</th>
                 <th onclick="sortTable(2)">Nachname</th>
                 <th>Phone</th>
@@ -112,6 +136,16 @@
             {% for lead in leads %}
             <tr>
                 <td>{{ lead.id }}</td>
+                <td>
+                    <div class="progress-line">
+                      {% for i in range(1, 12) %}
+                      <div class="status-point {% if loop.index <= (lead.status.split('.')[0]|int) %}completed{% endif %}"></div>
+                      {% endfor %}
+                    </div>
+                  </td>
+                  
+                  
+                  
                 <td>{{ lead.first_name }}</td>
                 <td>{{ lead.last_name }}</td>
                 <td>{{ lead.phone }}</td>
@@ -297,6 +331,29 @@
               });
             }
             </script>
+            <script>
+                document.addEventListener("DOMContentLoaded", function(event) {
+                  const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
+                  const customComparer = (idx, asc) => (a, b) => { //neu
+                        const aValue = parseFloat(getCellValue(asc ? a : b, idx).replace(",", "."));//neu
+                        const bValue = parseFloat(getCellValue(asc ? b : a, idx).replace(",", "."));//neu
+                        return aValue - bValue;//neu
+                    };
+
+                  const comparer = (idx, asc) => (a, b) => ((v1, v2) => 
+                      v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
+                  )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
+                
+                  document.querySelectorAll('th').forEach(th => th.addEventListener('click', (() => {
+                      const table = th.closest('table');
+                      const tbody = table.querySelector('tbody');
+                      Array.from(tbody.querySelectorAll('tr'))
+                          .sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
+                          .forEach(tr => tbody.appendChild(tr));
+                  })));
+                });
+                </script>
+                
             
     </body>
     </html>
