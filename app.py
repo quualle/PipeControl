@@ -2,7 +2,6 @@ from flask import Flask, render_template, request, redirect, url_for, jsonify
 from models import db, Lead, Customer
 from datetime import datetime
 
-
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///meinefirma.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -49,6 +48,7 @@ def index():
     bk_link = url_for('bestandskunden')
     bk_link_text = 'Bestandskunden'
     return render_template('index.html', leads=leads, bk_link=bk_link, bk_link_text=bk_link_text)
+
     
 @app.route('/delete_lead/<int:id>/<string:reason>', methods=['POST'])
 def delete_lead(id, reason):
@@ -81,9 +81,10 @@ def add_lead():
                       '6. PV vorgestellt, warten auf Feedback',
                       '7. PV akzeptiert, warten auf Vertrag',
                       '8. Vertrag an Kunden gesendet',
-                      '9. Warten auf Reisedaten',
-                      '10. Warten auf Anreise',
-                      '11. Anreise erfolgt']
+                      '9. Vertrag unterschrieben zurück & hochgeladen'
+                      '10. Warten auf Reisedaten',
+                      '11. Warten auf Anreise',
+                      '12. Anreise erfolgt']
     lead = Lead(first_name=first_name, last_name=last_name, phone=phone, email=email, status=status, zugehoerigkeit=zugehoerigkeit, notes = notes)    
     
     db.session.add(lead)
@@ -118,9 +119,10 @@ status_stages = [
         '6. PV vorgestellt, warten auf Feedback',
         '7. PV akzeptiert, warten auf Vertrag',
         '8. Vertrag an Kunden gesendet',
-        '9. Warten auf Reisedaten',
-        '10. Warten auf Anreise',
-        '11. Anreise erfolgt'
+        '9. Vertrag unterschrieben zurück & hochgeladen'
+        '10. Warten auf Reisedaten',
+        '11. Warten auf Anreise',
+        '12. Anreise erfolgt'
 ]
 
 @app.route('/change_status/<int:id>', methods=['POST'])
@@ -151,9 +153,10 @@ def get_next_status(current_status):
         '6. PV vorgestellt, warten auf Feedback',
         '7. PV akzeptiert, warten auf Vertrag',
         '8. Vertrag an Kunden gesendet',
-        '9. Warten auf Reisedaten',
-        '10. Warten auf Anreise',
-        '11. Anreise erfolgt'
+        '9. Vertrag unterschrieben zurück & hochgeladen'
+        '10. Warten auf Reisedaten',
+        '11. Warten auf Anreise',
+        '12. Anreise erfolgt'
     ]
     try:
         current_index = status_options.index(current_status)

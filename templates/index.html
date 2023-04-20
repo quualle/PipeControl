@@ -29,6 +29,19 @@
         .completed {
           background-color: green;
         }
+        .zugehoerigkeit {
+            background-color: rgba(255, 0, 0, 0.1); /* Red with 10% opacity */
+        }
+
+        .zugehoerigkeit-B {
+            background-color: rgba(0, 255, 0, 0.1); /* Green with 10% opacity */
+        }
+
+        .zugehoerigkeit-C {
+            background-color: rgba(0, 0, 255, 0.1); /* Blue with 10% opacity */
+        }
+
+
       </style>
       
 
@@ -67,9 +80,10 @@
             <option value="6. PV vorgestellt, warten auf Feedback">6. PV vorgestellt, warten auf Feedback</option>
             <option value="7. PV akzeptiert, warten auf Vertrag">7. PV akzeptiert, warten auf Vertrag</option>
             <option value="8. Vertrag an Kunden gesendet">8. Vertrag an Kunden gesendet</option>
-            <option value="9. Warten auf Reisedaten">9. Warten auf Reisedaten</option>
-            <option value="10. Warten auf Anreise">10. Warten auf Anreise</option>
-            <option value="11. Anreise erfolgt">11. Anreise erfolgt</option>
+            <option value="9. Vertrag unterschrieben zurück & hochgeladen">9. Vertrag unterschrieben zurück & hochgeladen</option>
+            <option value="10. Warten auf Reisedaten">10. Warten auf Reisedaten</option>
+            <option value="11. Warten auf Anreise">11. Warten auf Anreise</option>
+            <option value="12. Anreise erfolgt">12. Anreise erfolgt</option>
         </select>
     </div>
             <div class="form-group">
@@ -116,31 +130,36 @@
 
     <button id="apply-filters" class="btn btn-primary mt-3">Apply filters</button>
    
-        <thead>
-            <tr>
-                <th onclick="sortTable(0)">ID</th>
-                <th onclick="sortTable(0)">Fortschritt</th>
-                <th onclick="sortTable(1)">Vorname</th>
-                <th onclick="sortTable(2)">Nachname</th>
-                <th>Phone</th>
-                <th>Email</th>
-                <th onclick="sortTable(3)">Status</th>
-                <th scope="col">Hinzugefügt am</th>
-                <th scope="col">Zuletzt geändert</th>
-                <th scope="col">zugehoerigkeit</th>
-                <th>Notes</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for lead in leads %}
-            <tr>
+    <thead>
+        <tr>
+          <th><span onclick="sortTable(0)">ID</span> <input type="checkbox" class="toggle-column" data-column="1" checked></th>
+          <th><span onclick="sortTable(1)">Fortschritt</span> <input type="checkbox" class="toggle-column" data-column="2" checked></th>
+          <th><span onclick="sortTable(2)">Vorname</span> <input type="checkbox" class="toggle-column" data-column="3" checked></th>
+          <th><span onclick="sortTable(3)">Nachname</span> <input type="checkbox" class="toggle-column" data-column="4" checked></th>
+          <th>Phone <input type="checkbox" class="toggle-column" data-column="5" checked></th>
+          <th>Email <input type="checkbox" class="toggle-column" data-column="6" checked></th>
+          <th><span onclick="sortTable(6)">Status</span> <input type="checkbox" class="toggle-column" data-column="7" checked></th>
+          <th>Hinzugefügt am <input type="checkbox" class="toggle-column" data-column="8" checked></th>
+          <th>Zuletzt geändert <input type="checkbox" class="toggle-column" data-column="9" checked></th>
+          <th>zugehoerigkeit <input type="checkbox" class="toggle-column" data-column="10" checked></th>
+          <th>Notes <input type="checkbox" class="toggle-column" data-column="11" checked></th>
+          <th></th>
+        </tr>
+      </thead>
+      
+      
+
+      <tbody>
+        {% for lead in leads %}
+        <tr class="zugehoerigkeit-{{ lead.zugehoerigkeit }}">
+           
                 <td>{{ lead.id }}</td>
                 <td>
                     <div class="progress-line">
-                      {% for i in range(1, 12) %}
-                      <div class="status-point {% if loop.index <= (lead.status.split('.')[0]|int) %}completed{% endif %}"></div>
-                      {% endfor %}
+                        {% for i in range(1, 13) %}
+                        <div class="status-point {% if loop.index <= (lead.status.split('.')[0]|int) %}completed{% endif %}{% if loop.index == 10 %} space{% endif %}"></div>
+                        {% endfor %}
+                        
                     </div>
                   </td>
                   
@@ -164,13 +183,15 @@
                                     Delete
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="deleteMenu">
-                                    <button class="dropdown-item" onclick="deleteLead('{ lead.id }', 'mistake')">Delete because of mistake</button>
-                                    <button class="dropdown-item" onclick="deleteLead('{ lead.id }', 'not_convert')">Delete because customer will not convert</button>
+                                    <button class="dropdown-item" onclick="deleteLead('{{ lead.id }}', 'mistake')">Delete because of mistake</button>
+                                    <button class="dropdown-item" onclick="deleteLead('{{ lead.id }}', 'not_convert')">Delete because customer will not convert</button>
+                                    
                                     <div class="dropdown-divider"></div>
                                     <div class="dropdown-header">Reason for not converting:</div>
                                     {% for i in range(1, 8) %}
-                                    <button class="dropdown-item" onclick="deleteLeadWithReason('{ lead.id }', 'reason_{{ i }}')">Reason {{ i }}</button>
+                                    <button class="dropdown-item" onclick="deleteLeadWithReason('{{ lead.id }}', 'reason_{{ i }}')">Reason {{ i }}</button>
                                     {% endfor %}
+                                    
                                 </div>
                             </div>
                             
@@ -178,6 +199,11 @@
                         </td>
 
                 </tr>
+                {% endfor %}
+                {% for lead in leads %}
+                    <tr class="zugehoerigkeit-{{ lead.zugehoerigkeit }}">
+                        <!-- ... other table cells ... -->
+                    </tr>
                 {% endfor %}
             </tbody>
         </table>
@@ -353,6 +379,27 @@
                   })));
                 });
                 </script>
+                <script>
+                document.querySelectorAll('.toggle-column').forEach(function (checkbox) {
+                    checkbox.addEventListener('change', function (event) {
+                        event.stopPropagation();
+                        var columnIndex = parseInt(event.target.getAttribute('data-column'));
+                        var table = document.getElementById('leads-table');
+                        var rows = table.rows;
+
+                        for (var i = 0; i < rows.length; i++) {
+                        var cell = rows[i].cells[columnIndex];
+                        if (event.target.checked) {
+                            cell.style.display = 'table-cell';
+                        } else {
+                            cell.style.display = 'none';
+                        }
+                        }
+                    });
+                    });
+
+                </script>
+                    
                 
             
     </body>

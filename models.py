@@ -17,7 +17,7 @@ class Lead(db.Model):
     zugehoerigkeit = db.Column(db.String(50), nullable=True)
     notes = db.Column(db.Text, nullable=True)
 
-    def __init__(self, first_name, last_name, phone, email, status, zugehoerigkeit):
+    def __init__(self, first_name, last_name, phone, email, status, zugehoerigkeit, notes):
         self.first_name = first_name
         self.last_name = last_name
         self.phone = phone
@@ -26,6 +26,7 @@ class Lead(db.Model):
         self.created_at = datetime.utcnow()
         self.last_changed = datetime.utcnow()
         self.zugehoerigkeit = zugehoerigkeit
+        self.notes = notes
 
 
 class Customer(db.Model):
