@@ -4,6 +4,7 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Leads und Kundenverwaltung</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="/static/css/main.css">
@@ -101,14 +102,26 @@
             
     <button type="submit" class="btn btn-success">Save</button>
 </form>
+
+<div>
+    <tr>
+        <th><span onclick="sortTable(0)"></span> <input type="checkbox" class="toggle-column" data-column="0" checked></th>
+        <th><span onclick="sortTable(1)"></span> <input type="checkbox" class="toggle-column" data-column="1" checked></th>
+        <th><span onclick="sortTable(2)"></span> <input type="checkbox" class="toggle-column" data-column="2" checked></th>
+        <th><span onclick="sortTable(3)"></span> <input type="checkbox" class="toggle-column" data-column="3" checked></th>
+        <th><span onclick="sortTable(4)"> </span><input type="checkbox" class="toggle-column" data-column="4" checked></th>
+        <th><span onclick="sortTable(5)"></span><input type="checkbox" class="toggle-column" data-column="5" checked></th>
+        <th><span onclick="sortTable(6)"></span> <input type="checkbox" class="toggle-column" data-column="6" checked></th>
+        <th><span onclick="sortTable(7)"></span><input type="checkbox" class="toggle-column" data-column="7" checked></th>
+        <th><span onclick="sortTable(8)"></span><input type="checkbox" class="toggle-column" data-column="8" checked></th>
+        <th><span onclick="sortTable(9)"></span> <input type="checkbox" class="toggle-column" data-column="9" checked></th>
+        <th><span onclick="sortTable(10)"></span><input type="checkbox" class="toggle-column" data-column="10" checked></th>
+        <th></th>
+      </tr>
+</div>
 <table id="leads-table" class="table table-striped mt-3">
 
-    <div>
-    <label for="sort-by">Sort by:</label>
-        <a href="{{ url_for('index', sort_by='id') }}">ID</a>
-        <a href="{{ url_for('index', sort_by='last_name') }}">Nachname</a>
-        <a href="{{ url_for('index', sort_by='status') }}">Status</a>
-    </div>
+    
 
     <div style="margin-top: 10px;"></div>
     <label for="filter-zugehoerigkeit">Filter by zugehoerigkeit:</label>
@@ -120,31 +133,27 @@
     </select>
 </div>
 
-    <label for="filter-status">Filter by status:</label>
-    <select id="filter-status" class="form-control">
-        <option value="">All</option>
-        <!-- Add all your status options here -->
-        <option value="1. Infogespräch fehlt noch">1. Infogespräch fehlt noch</option>
-        <!-- ... -->
-    </select>
+    
 
     <button id="apply-filters" class="btn btn-primary mt-3">Apply filters</button>
    
     <thead>
+        
         <tr>
-          <th><span onclick="sortTable(0)">ID</span> <input type="checkbox" class="toggle-column" data-column="1" checked></th>
-          <th><span onclick="sortTable(1)">Fortschritt</span> <input type="checkbox" class="toggle-column" data-column="2" checked></th>
-          <th><span onclick="sortTable(2)">Vorname</span> <input type="checkbox" class="toggle-column" data-column="3" checked></th>
-          <th><span onclick="sortTable(3)">Nachname</span> <input type="checkbox" class="toggle-column" data-column="4" checked></th>
-          <th>Phone <input type="checkbox" class="toggle-column" data-column="5" checked></th>
-          <th>Email <input type="checkbox" class="toggle-column" data-column="6" checked></th>
-          <th><span onclick="sortTable(6)">Status</span> <input type="checkbox" class="toggle-column" data-column="7" checked></th>
-          <th>Hinzugefügt am <input type="checkbox" class="toggle-column" data-column="8" checked></th>
-          <th>Zuletzt geändert <input type="checkbox" class="toggle-column" data-column="9" checked></th>
-          <th>zugehoerigkeit <input type="checkbox" class="toggle-column" data-column="10" checked></th>
-          <th>Notes <input type="checkbox" class="toggle-column" data-column="11" checked></th>
-          <th></th>
+            <th><span onclick="sortTable(0)">ID</span> </th>
+            <th><span onclick="sortTable(1)">Fortschritt</span> </th>
+            <th><span onclick="sortTable(2)">Vorname</span> </th>
+            <th><span onclick="sortTable(3)">Nachname</span> </th>
+            <th><span onclick="sortTable(0)">Phone</span> </th>
+            <th><span onclick="sortTable(0)">Email</span> </th>
+            <th><span onclick="sortTable(0)">Status</span> </th>
+            <th><span onclick="sortTable(0)">Hinzugefügt am</span> </th>
+            <th><span onclick="sortTable(0)">Zuletzt geändert</span> </th>
+            <th><span onclick="sortTable(0)">zugehoerigkeit</span> </th>
+            <th><span onclick="sortTable(0)">Notes</span> </th>
+           
         </tr>
+        
       </thead>
       
       
@@ -397,6 +406,61 @@
                         }
                     });
                     });
+                    $(document).ready(function() {
+                        $('#apply-filters').on('click', function() {
+                            const zugehoerigkeitFilter = $('#filter-zugehoerigkeit').val();
+                            
+
+                            $('table#leads-table tbody tr').each(function() {
+                                const zugehoerigkeit = $(this).find('td:nth-child(10)').text();
+                               
+
+                                if ((zugehoerigkeitFilter === '' || zugehoerigkeit === zugehoerigkeitFilter)) {
+                                    $(this).show();
+                                } else {
+                                    $(this).hide();
+                                }
+                            });
+                        });
+                    });
+
+                    function sortTable(n) {
+                        var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+                        table = document.getElementById("leads-table");
+                        switching = true;
+                        dir = "asc";
+
+                        while (switching) {
+                            switching = false;
+                            rows = table.rows;
+                            for (i = 1; i < (rows.length - 1); i++) {
+                            shouldSwitch = false;
+                            x = rows[i].getElementsByTagName("TD")[n];
+                            y = rows[i + 1].getElementsByTagName("TD")[n];
+                            if (dir === "asc") {
+                                if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                                shouldSwitch = true;
+                                break;
+                                }
+                            } else if (dir === "desc") {
+                                if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                                shouldSwitch = true;
+                                break;
+                                }
+                            }
+                            }
+                            if (shouldSwitch) {
+                            rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                            switching = true;
+                            switchcount ++;
+                            } else {
+                            if (switchcount === 0 && dir === "asc") {
+                                dir = "desc";
+                                switching = true;
+                            }
+                            }
+                        }
+                        }
 
                 </script>
                     
